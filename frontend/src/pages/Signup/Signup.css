@@ -1,0 +1,273 @@
+/* =========================
+   Global Reset & Base Styles
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+a {
+  color: #ff6600;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Buttons
+========================= */
+.btn {
+  background: #003399;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+}
+
+.btn.orange {
+  background: #ff6600;
+  margin-top: 15px;
+}
+
+.btn.full {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn.full:hover {
+  background-color: #fff;
+  color: #003399;
+}
+
+/* =========================
+   Full Screen Background
+========================= */
+.full-screen {
+  background-image: url("/src/assets/images/evangadi-background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   Main Layout
+========================= */
+.main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 50px;
+  gap: 40px;
+  margin: 40px;
+}
+
+.name-row {
+  display: flex;
+  gap: 5px;
+}
+
+/* =========================
+   Form Section
+========================= */
+.form-box {
+  flex: 1;
+  width: 30%;
+  background: #f8f8f8;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 60px;
+}
+
+.form-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid rgb(207, 204, 204);
+  border-radius: 5px;
+  background-color: #fff;
+  color: #000;
+  outline: none;
+}
+/* Make all inputs the same width */
+form input {
+  width: 100%;
+  padding: 10px 10px; /* padding-right for password handled separately */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box; /* important! includes padding in width */
+}
+
+/* For the two inputs in name-row */
+.name-row {
+  display: flex;
+  gap: 10px; /* space between inputs */
+}
+
+.name-row input {
+  flex: 1; /* each input takes equal space */
+}
+
+/* Password input already has padding-right for icon */
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   Checkbox Section
+========================= */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  color: #333;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  appearance: none;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  accent-color: #ff6600;
+}
+
+.checkbox-row label {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.checkbox-row a {
+  color: #ff6600;
+  font-weight: 500;
+}
+
+/* =========================
+   About Section
+========================= */
+.about {
+  flex: 1;
+  padding: 40px;
+  margin-top: 40px;
+}
+
+.about-topic {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.about-link {
+  color: #ff6600;
+  font-weight: bold;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+/*  Small Mobile (max-width: 600px) */
+@media (max-width: 600px) {
+  .main {
+    flex-direction: column;
+    padding: 10px;
+    margin: 0;
+    gap: 20px;
+  }
+
+  .form-box,
+  .about {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .form-box h3 {
+    font-size: 1.2rem;
+  }
+
+  .form-box input,
+  .btn.full {
+    font-size: 0.9rem;
+  }
+
+  .checkbox-row label {
+    font-size: 0.8rem;
+  }
+
+  .about-topic {
+    font-size: 20px;
+  }
+
+  .full-screen {
+    background-position: top;
+  }
+}
+
+/*  Tablets (601px - 992px) */
+@media (min-width: 601px) and (max-width: 992px) {
+  .main {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin: 20px;
+    gap: 30px;
+  }
+
+  .form-box {
+    width: 70%;
+    margin: 0;
+    padding: 25px;
+  }
+
+  .about {
+    width: 80%;
+    padding: 25px;
+  }
+
+  .about-topic {
+    font-size: 22px;
+  }
+}
+
+/*  Large Desktop (992px+) */
+@media (min-width: 993px) {
+  .main {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .form-box {
+     width: 35%; 
+  }
+
+  .about {
+    width: 55%;
+  }
+}
