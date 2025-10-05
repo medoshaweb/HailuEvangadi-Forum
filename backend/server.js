@@ -29,9 +29,9 @@ async function start() {
     app.locals.db = db;
 
     // Routes with /api prefix
-    app.use("/api", userRoutes);
+    app.use("/api/users", userRoutes);
     app.use("/api/question", authenticate, questionRoutes);
-    app.use("/api/answer", answerRoutes);
+    app.use("/api/answer", authenticate, answerRoutes);
 
     // Global error handler (put this at the end, before app.listen)
     app.use((err, req, res, next) => {
