@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api", // backend server
+  baseURL: "http://localhost:5000/api/users", // backend server
 });
 
 // Attach token if logged in

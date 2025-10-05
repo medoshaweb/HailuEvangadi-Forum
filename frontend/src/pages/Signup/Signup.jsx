@@ -6,8 +6,8 @@ import "./Signup.css";
 const Signup = () => {
   const [form, setForm] = useState({
     email: "",
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     username: "",
     password: "",
   });
@@ -27,7 +27,8 @@ const Signup = () => {
       alert("Signup successful! Please login.");
       navigate("/login"); // Go to login page
     } catch (err) {
-      alert(err.response?.data?.error || "Signup failed");
+      console.error(err.response?.data);
+      alert(err.response?.data?.message || "Signup failed");
     }
   };
 
@@ -36,7 +37,7 @@ const Signup = () => {
       <main className="main">
         {/* Form Section */}
         <div className="form-box">
-          <form onSubmit={handleSubmit} className="form-size">
+          <form onSubmit={handleSubmit}>
             <h3>Join the network</h3>
             <p>
               Already have an account?{" "}
@@ -49,6 +50,7 @@ const Signup = () => {
             </p>
 
             <input
+              style={{ backgroundColor: "#e8f0fe" }}
               name="email"
               type="email"
               placeholder="Email"
@@ -60,17 +62,17 @@ const Signup = () => {
             <div className="name-row">
               <input
                 type="text"
-                name="firstName"
+                name="firstname"
                 placeholder="First Name"
-                value={form.firstName}
+                value={form.firstname}
                 onChange={handleChange}
                 required
               />
               <input
                 type="text"
-                name="lastName"
+                name="lastname"
                 placeholder="Last Name"
-                value={form.lastName}
+                value={form.lastname}
                 onChange={handleChange}
                 required
               />
@@ -86,6 +88,7 @@ const Signup = () => {
             />
 
             <input
+              style={{ backgroundColor: "#e8f0fe" }}
               type="password"
               name="password"
               placeholder="Password"
@@ -95,8 +98,8 @@ const Signup = () => {
             />
 
             <div className="checkbox-row">
-              <input type="checkbox" id="terms" required />
-              <label >
+              <input type="checkbox" id="agree" name="agree" required />
+              <label htmlFor="agree">
                 I agree to the <a href="#">privacy policy</a> and{" "}
                 <a href="#">terms of service</a>
               </label>
@@ -105,12 +108,13 @@ const Signup = () => {
             <button type="submit" className="btn full">
               Agree and Join
             </button>
+            <a href="#">Already have a account</a>
           </form>
         </div>
 
         {/* About Section */}
         <div className="about">
-          <a href="#" className ="about-link">
+          <a href="#" className="about-link">
             About
           </a>
 
