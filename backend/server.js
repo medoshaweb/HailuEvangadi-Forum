@@ -1,54 +1,54 @@
 const express = require("express");
-// /const mysql2 = require('mysql2')
-// const bodyParser = require("body-parser");
-// const cors = require("cors");
-// require("dotenv").config();
+const cors = require("cors");
 const app = express();
-const port =5000
-
-//db Connection
-const dbConnection = require("./config/db")
+require("dotenv").config();
 
 
-// user routes middleware file
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const port = 5000;
+
+
+// Import routes
 const userRoutes = require("./routes/userRoutes");
-//const questionRoutes = require("./routes/questionRoutes");
-//const answerRoutes = require("./routes/answerRoutes");
+const questionRoutes = require("./routes/questionRoutes");
+ const authenticate = require('./middleware/authMiddleware')
+const answerRoutes = require("./routes/answerRoutes");
 
-// Routes with /api prefix
-app.use("/api", userRoutes);
-//app.use("/api/questions", questionRoutes);
-//app.use("/api/answers", answerRoutes);
+const initDB = require("./config/db");
 
-async function start(){
 
-  try{
-    const result = await dbConnection.execute("select 'test'")
-  }catch(error){
-    console.log(error.message)
+async function start() {
+  try {
+    const db = await initDB(); //  Call the function
+
+    // Save pool in app.locals to use in controllers
+    app.locals.db = db;
+
+    // Routes with /api prefix
+    app.use("/api", userRoutes);
+    app.use("/api/question", authenticate, questionRoutes);
+    app.use("/api/answer", answerRoutes);
+
+    // Global error handler (put this at the end, before app.listen)
+    app.use((err, req, res, next) => {
+      console.error(" SERVER ERROR:", err);
+      res.status(500).json({ message: "Server crashed", error: err.message });
+    });
+
+    // Test query
+    // const [result] = await db.execute("SELECT 'test' AS test_col");
+    // console.log("Database connection established:", result);
+
+    app.listen(port, () => {
+      console.log(` Server running on port ${port}`);
+    });
+  } catch (error) {
+    console.log("Startup error:", error.message);
   }
 }
 
-
-app.listen(port,(err)=>{
-  if(err){
-      console.log(err.message);
-  }else{
-    console.log(`listening on ${port}`);
-  }
-})
-
-// // Middleware
-// app.use(cors());
-// app.use(bodyParser.json());
-
-
-
-// // Start server
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(` Server running on http://localhost:${PORT}`);
-// });
-
-
-
+start();

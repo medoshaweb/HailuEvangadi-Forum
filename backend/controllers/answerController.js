@@ -1,37 +1,37 @@
-import pool from "../config/db.js";
 
-// Get answers for a question
-export const getAnswers = async (req, res) => {
+const dbPromise = require("../config/db");
+
+// GET all answers
+exports.getAnswers = async (req, res) => {
+  const db = req.app.locals.db; // use the pool from app.locals
   try {
-    const { questionId } = req.params;
-    const [rows] = await pool.query(
-      "SELECT a.id, a.content, a.created_at, u.username FROM answers a JOIN users u ON a.user_id = u.id WHERE a.question_id = ? ORDER BY a.created_at DESC",
-      [questionId]
-    );
+    const [rows] = await db.query("SELECT * FROM answer");
     res.json(rows);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to fetch answers", details: error.message });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Post answer
-export const postAnswer = async (req, res) => {
+// CREATE a new answer
+exports.createAnswer = async (req, res) => {
+  const db = req.app.locals.db; // use the pool from app.locals
+  const { question_id, user_id, answer } = req.body;
+
+  if (!question_id || !user_id || !answer) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
   try {
-    const { questionId, content } = req.body;
-
-    const [result] = await pool.query(
-      "INSERT INTO answers (content, user_id, question_id) VALUES (?, ?, ?)",
-      [content, req.user.id, questionId]
+    const [result] = await db.query(
+      "INSERT INTO answer (question_id, user_id, answer) VALUES (?, ?, ?)",
+      [question_id, user_id, answer]
     );
-
     res
       .status(201)
-      .json({ message: "Answer added", answerId: result.insertId });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to post answer", details: error.message });
+      .json({ message: "Answer created", answerId: result.insertId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
