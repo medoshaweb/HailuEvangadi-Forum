@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { QuestionProvider } from "../src/context/QuestionContext";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import Questions from "./pages/Questions/Questions";
@@ -8,17 +9,19 @@ import QuestionDetail from "./pages/QuestionDetail/QuestionDetail";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Questions />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/ask" element={<AskQuestion />} />
-          <Route path="/question/:id" element={<QuestionDetail />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <QuestionProvider>
+          <Routes>
+            <Route path="/" element={<Questions />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/ask" element={<AskQuestion />} />
+            <Route path="/question/:id" element={<QuestionDetail />} />
+          </Routes>
+        </QuestionProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

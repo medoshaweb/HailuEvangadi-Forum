@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../../api";
+import API from "../../QuestionAPI";
+import { AuthContext } from "../../context/AuthContext";
+import QuestionList from "../Questions/QuestionList/QuestionList";
+// import QuestionDetail from "../QuestionDetail/QuestionDetail";
 
 function AskQuestion() {
-  const [form, setForm] = useState({ title: "", description: "" });
+  const { user } = useContext(AuthContext); // get logged-in user
+  const [form, setForm] = useState({ question: "", question_description: "" });
+  const [loading, setLoading] = useState(false); // optional loading state
+  const [newQuestion, setNewQuestion] = useState(null); // store the new question
   const navigate = useNavigate();
 
   const handleChange = (e) =>
@@ -11,25 +17,62 @@ function AskQuestion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      alert("You must be logged in to post a question");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await API.post("/question", form);
-      navigate("/");
+      // Attach the user_id dynamically from AuthContext
+      const payload = { ...form, user_id: user.user_id };
+
+      const res = await API.post("/", payload);
+      console.log("Created question:", res.data.question);
+      // You can now update state to show it in the question list
+
+      // store the created question
+      setNewQuestion(res.data);
+
+      alert("Question posted successfully!"); // optional success message
+      setForm({ question: "", question_description: "" }); // clear form
+      navigate("/"); // go back to home after posting
     } catch (err) {
-      alert("Failed to post question");
+      console.error(err?.response || err);
+      alert(
+        err?.response?.data?.message || "Failed to post question. Try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Ask a Question</h3>
-      <input name="title" placeholder="Title" onChange={handleChange} />
-      <textarea
-        name="description"
-        placeholder="Describe your problem"
-        onChange={handleChange}
-      />
-      <button type="submit">Post</button>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <h3>Ask Question</h3>
+        <input
+          name="question"
+          placeholder="Title"
+          value={form.question}
+          onChange={handleChange}
+          required
+        />
+        <textarea
+          name="question_description"
+          placeholder="Describe your problem"
+          value={form.question_description}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? "Posting..." : "Post"}
+        </button>
+      </form>
+      {/* Show question list and pass the new question */}
+      <QuestionList newQuestion={newQuestion} />
+    </div>
   );
 }
 

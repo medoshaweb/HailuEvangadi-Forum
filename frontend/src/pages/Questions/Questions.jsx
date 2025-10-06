@@ -1,27 +1,29 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
-import API from "../../api";
 import { AuthContext } from "../../context/AuthContext";
+import { QuestionContext } from "../../context/QuestionContext";
 
 function Questions() {
-  const [questions, setQuestions] = useState([]);
   const { user } = useContext(AuthContext);
-
-  useEffect(() => {
-    API.get("/question").then((res) => setQuestions(res.data));
-  }, []);
+  const { questions } = useContext(QuestionContext); // use global questions
 
   return (
     <div>
       <h2>Welcome {user?.username || "Guest"}</h2>
-      {user && <Link to="/ask">Ask a Question</Link>}
-      <ul>
-        {questions.map((q) => (
-          <li key={q.id}>
-            <Link to={`/question/${q.id}`}>{q.title}</Link> (by {q.username})
-          </li>
-        ))}
-      </ul>
+      {user && <Link to="/ask">Ask Question</Link>}
+
+      {questions.length === 0 ? (
+        <p>No questions yet.</p>
+      ) : (
+        <ul>
+          {questions.map((q) => (
+            <li key={q.question_id}>
+              <Link to={`/question/${q.question_id}`}>{q.question}</Link> (by
+              User {q.user_id})
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
