@@ -4,50 +4,44 @@ const app = express();
 require("dotenv").config();
 
 
-
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const port = 5000;
+// Port
+const port = process.env.PORT || 5000;
 
-
-// Import routes
+// Import routes and middleware
 const userRoutes = require("./routes/userRoutes");
 const questionRoutes = require("./routes/questionRoutes");
- const authenticate = require('./middleware/authMiddleware')
 const answerRoutes = require("./routes/answerRoutes");
+const authenticate = require("./middleware/authMiddleware");
 
+// DB connection
 const initDB = require("./config/db");
 
-
+// Start server
 async function start() {
   try {
-    const db = await initDB(); //  Call the function
+    const db = await initDB(); // Initialize DB
+    app.locals.db = db; // Make db accessible to routes/controllers
 
-    // Save pool in app.locals to use in controllers
-    app.locals.db = db;
+    //  Routes
+    app.use("/api/users", userRoutes); // Public routes (login, signup)
+    app.use("/api/questions", authenticate, questionRoutes); // Public for now (you can protect later)
+    app.use("/api/answers", authenticate, answerRoutes); // Protected route
 
-    // Routes with /api prefix
-    app.use("/api/users", userRoutes);
-    app.use("/api/question", authenticate, questionRoutes);
-    app.use("/api/answer", authenticate, answerRoutes);
-
-    // Global error handler (put this at the end, before app.listen)
+    //  Global error handler
     app.use((err, req, res, next) => {
-      console.error(" SERVER ERROR:", err);
+      console.error("SERVER ERROR:", err);
       res.status(500).json({ message: "Server crashed", error: err.message });
     });
 
-    // Test query
-    // const [result] = await db.execute("SELECT 'test' AS test_col");
-    // console.log("Database connection established:", result);
-
-    app.listen(port, () => {
-      console.log(` Server running on port ${port}`);
-    });
+    //  Start listening
+    app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
   } catch (error) {
-    console.log("Startup error:", error.message);
+    console.error("Startup error:", error.message);
   }
 }
 

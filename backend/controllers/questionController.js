@@ -13,7 +13,7 @@ exports.getQuestions = async (req, res) => {
 };
 
 exports.createQuestion = async (req, res) => {
-  const db = req.app.locals.db; // use the pool
+  const db = req.app.locals.db; // your database connection
   const { question, question_description, user_id } = req.body;
 
   if (!question || !question_description || !user_id) {
@@ -21,13 +21,20 @@ exports.createQuestion = async (req, res) => {
   }
 
   try {
+    // Insert the question
     const [result] = await db.query(
       "INSERT INTO question (question, question_description, user_id) VALUES (?, ?, ?)",
       [question, question_description, user_id]
     );
-    res
-      .status(201)
-      .json({ message: "Question created", questionId: result.insertId });
+
+    // Fetch the newly created question
+    const [rows] = await db.query(
+      "SELECT * FROM question WHERE question_id = ?",
+      [result.insertId]
+    );
+
+    // Return the full question object
+    res.status(201).json({ message: "Question created", question: rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
